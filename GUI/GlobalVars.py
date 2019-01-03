@@ -108,6 +108,7 @@ def UpDateValues(ui):
 def SendAllToTeensy():
     import GlobalVars
 
+
     GlobalVars.ser.write('SET AMP_THRESHOLD ' + str(GlobalVars.FreqTHRESH) + ';')
     GlobalVars.ser.write('SET FF_MIN ' + str(GlobalVars.MinFF) + ';')
     GlobalVars.ser.write('SET FF_MAX ' + str(GlobalVars.MaxFF) + ';')
@@ -117,7 +118,8 @@ def SendAllToTeensy():
     GlobalVars.ser.write('SET FREQDIR ' + str(int(GlobalVars.HitDIR)) + ';')
     GlobalVars.ser.write('SET PLAYWN ' + str(int(GlobalVars.WN_ON)) + ';')
     GlobalVars.ser.write('SET ISDIR ' + str(int(GlobalVars.DirFlag)) + ';')
-    GlobalVars.ser.write('SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';')   
+    GlobalVars.ser.write('SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';')
+
     
     print 'SET AMP_THRESHOLD ' + str(GlobalVars.FreqTHRESH) + ';'
     print 'SET FF_MIN ' + str(GlobalVars.MinFF) + ';'
@@ -128,7 +130,7 @@ def SendAllToTeensy():
     print 'SET FREQDIR ' + str((GlobalVars.HitDIR)) + ';'
     print 'SET PLAYWN ' + str((GlobalVars.WN_ON)) + ';'
     print 'SET ISDIR ' + str(int(GlobalVars.DirFlag)) + ';'
-    print ('SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';')
+    print 'SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';'
   
     
 

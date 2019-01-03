@@ -8,7 +8,6 @@ def GetSerialData(savefile):
     import GlobalVars    
 
     if (GlobalVars.ser.in_waiting>0):
-
             line=GlobalVars.ser.readline(GlobalVars.ser.inWaiting()).strip('\n\r');
            # print line
             try:

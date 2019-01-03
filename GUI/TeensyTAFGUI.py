@@ -23,15 +23,19 @@ def GetTeensyPorts():
 
     for p in TeensyPort:                              
                temp = p[0]
-               print temp
+              #print temp
                ui.Teensy_Com_ComboBox.insertItem(0,str(temp))          
 
-    GlobalVars.CurrentPort=temp
+    if (len(temp)>0):
+        GlobalVars.CurrentPort=(temp)
+    else:
+        print "No Teensy"
     
 
 def startButtonPressed():
         import GlobalVars
         import Functions
+        import serial
         #import numpy as np
         from numpy import histogram, array, arange
         import sys
@@ -46,9 +50,9 @@ def startButtonPressed():
         GlobalVars.FF = deque(maxlen=QueSize)
         GlobalVars.HIT = deque(maxlen=QueSize)
         GlobalVars.DP = deque(maxlen=QueSize)
-
+   
         try:
-            GlobalVars.ser=serial.Serial(str(GlobalVars.CurrentPort),115200)
+            GlobalVars.ser=serial.Serial(str(GlobalVars.CurrentPort),9600)
         except:            
             messageBox=QMessageBox()
             messageBox.setWindowTitle("Serial Error")
@@ -63,23 +67,22 @@ def startButtonPressed():
         RemoveAppendix=str(GlobalVars.SavePath);
         RemoveAppendix.strip('.TAFlog')
         BaseFileName=RemoveAppendix+str(date[0])+','+str(date[1])+','+str(date[2])+','+str(date[3])+','+str(int(time.time()))
-     
+  
         configfilename=BaseFileName+'.TAFcfg'
         GlobalVars.saveConfig(configfilename)        
         GlobalVars.outfile=open(BaseFileName+'.TAFlog','w')     #Matched filenames for data and .Config files, for the sake of sanity.          
         setAllButtons(ui,False);
         ui.stopButton.setEnabled(True);
+        
+        GlobalVars.ser.flush()        
+        GlobalVars.SendAllToTeensy()    
+        GlobalVars.ser.write('START;')
+        GlobalVars.isRunning=True
         GlobalVars.ser.flush()
         
-        print 'START'
-        GlobalVars.SendAllToTeensy()
-        print 'START'        
-        GlobalVars.ser.write('START;')
-        print 'START'
-        GlobalVars.isRunning=True
-            
-        while GlobalVars.isRunning==True:            
-            isUpdated=Functions.GetSerialData(GlobalVars.outfile);
+        while GlobalVars.isRunning==True:        
+  
+            isUpdated=Functions.GetSerialData(GlobalVars.outfile); #pass the savefile for convenience, it's written to disk in the function. 
             
             if ((len(GlobalVars.FF)>5) and isUpdated):
                 y,x=histogram(GlobalVars.FF)
@@ -107,37 +110,16 @@ def startButtonPressed():
                     GlobalVars.FreqTHRESH=Threshold;
                     GlobalVars.ser.write('SET FREQTHRESH ' + str(GlobalVars.FreqTHRESH) + ';')
                     ui.editFREQ_THRESH.setText((str(GlobalVars.FreqTHRESH)))
+            app.processEvents();  
 
-##            # Sometimes worth plotting reference magnitudes.....         
-##            if (not(isUpdated) and not(TemplateCurrent)): #if we don't have new data, and don't have a current template
-##                    GlobalVars.ser.write('GET MAGS;')
-##                    
-##                    if (GlobalVars.ser.in_waiting>0):                        
-##                        line=GlobalVars.ser.readline(GlobalVars.ser.inWaiting()).strip('\n\r');
-##                        if (line[0:4]=="MAG "):
-##                            line=line.lstrip("MAG ")
-##                           # print line
-##                            MAGS=array(line.split(','), dtype=float)
-##                            if (templateOverPlot>5):
-##                                ui.MagsfromTeensy.clear()
-##                                templateOverPlot=0;
-##                                
-##                            ui.MagsfromTeensy.plot(MAGS,arange(0,GlobalVars.sampleBin*(GlobalVars.FFT/2),GlobalVars.sampleBin))
-##                            templateOverPlot=templateOverPlot+ 1                            
-##                            TemplateCurrent=True;                       
-       
-                
-            isUpdated=False;
-
-#            if (isUpdated and MagsCounter >10)
-          #  ui.FFMonitorPlot.pyplot(GlobalVars.FF);
-            app.processEvents();            
+         
         
 def stopButtonPressed():
         import GlobalVars
         from Functions import setAllButtons
         
         GlobalVars.isRunning=False;
+        GlobalVars.ser.flush();
         GlobalVars.ser.write('STOP;');
         GlobalVars.ser.close();
         setAllButtons(ui,True);
@@ -145,13 +127,12 @@ def stopButtonPressed():
         ui.startButton.setEnabled(True);
         GlobalVars.outfile.close()
         
-        
 def updateTemplate():
         import GlobalVars
         from ConfigParser import SafeConfigParser
         from numpy import arange, array      
 
-        loadfilename = (QtGui.QFileDialog.getOpenFileName(ui,'Open Config File', '.','*.TMPLT'))
+        loadfilename = (QtGui.QFileDialog.getOpenFileName(ui,'Open Template File', '.','*.TMPLT'))
         loadfilename=loadfilename.replace('/','\\') #.replace('/','\\')):
 
         parser=SafeConfigParser()

@@ -417,19 +417,6 @@
      <number>100</number>
     </property>
    </widget>
-   <widget class="QLabel" name="SaveFilePathLabel_4">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>51</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Saving to:</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="SaveFilePathLabel_5">
     <property name="geometry">
      <rect>
@@ -443,7 +430,7 @@
      <string>Hit Percent</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>430</x>

@@ -4,13 +4,18 @@ void loop() {
   parserLoop();
 
   //float timea = micros();
-
-  getsamples(); // not perfect, but I can't point to a volatile float, and I don't want to make the samples non-volatile.
-  arm_rms_f32(fftbuffer, FFT_SIZE, &RUNNING_AMP); //RMS of the buffer. Since there's a 'complex' component of all zeros, it still works fine.
+  if (isRunning) {     
+     //getsamples(); // not perfect, but I can't point to a volatile float, and I don't want to make the samples non-volatile.
+     //arm_rms_f32(fftbuffer, FFT_SIZE, &RUNNING_AMP); //RMS of the buffer. Since there's a 'complex' component of all zeros, it still works fine.   
+  }
+  else {
+    RUNNING_AMP=0;  
+  }
+  
 
   //Serial.println(RUNNING_AMP);
   if (RUNNING_AMP > AMP_THRESHOLD) {
-
+    export_mags();
     AboveThresh++;
   }
   else {
@@ -21,7 +26,6 @@ void loop() {
 
     CalculateFFT(); // Galculate the FFT, results are cast to the magnitudes variable.
 
-    export_mags(); //For testing of FFT- will sent out 0:FFT_SIZE/2 from the calculated FFT magnitudes. 
     dp = ScaleAndCompareToTemplate();
   //Serial.println(dp); // This will export the calculated distance between the current PSD and the template. If you're exporting PSDs, you probably want this commented out. 
 
@@ -48,11 +52,7 @@ void loop() {
                 play_wn();
                 delay(150);         // optional for slow syllables that you don't want to hit twice.
         } // 
-//        else {
-//               HIT=3;
-//               play_wn();
-//               delay(150);
-//        }
+
       } // end of sanity check for peak FF.
     } //end of template match triggered portions
   } // end of amplitude triggered portion

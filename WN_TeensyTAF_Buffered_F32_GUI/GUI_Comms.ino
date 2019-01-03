@@ -62,9 +62,9 @@ void START_AND_STOP(char* command) {
     Serial.println("Stopped");
   }
   else if (strstr(command, "START") != NULL) {
+    Serial.println("Starting...");
     samplingBegin();
-    isRunning=true;
-    delay(250); ///////////wait to fill the buffer....
+    isRunning=true;  
     Serial.println("Started...");
   }
 }

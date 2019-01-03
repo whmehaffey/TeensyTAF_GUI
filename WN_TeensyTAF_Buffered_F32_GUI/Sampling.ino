@@ -142,29 +142,32 @@ float ScaleAndCompareToTemplate() {
 // SAMPLING FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-
+///////////////////////
 // Starts the timer. If you run things that conflict with this interrupt, you'll crash the processor.
+//////////////////////
 void samplingBegin() {
-  // Reset sample buffer position and start callback at necessary rate.
-  sampleCounter = 0;
+  
+
   buffer.clear();
-  samplingTimer.begin(samplingCallback, 1000000 / SAMPLE_RATE_HZ); ///// This never really stops, except for WN playback....
-  while (not buffer.isFull()) {
-    //wait for it to fill.... 
-  }
+  samplingTimer.begin(samplingCallback, 1000000 / SAMPLE_RATE_HZ); ///// This should be continuous and fast. 
+  
+  while (not(buffer.isFull())) {  
+      delay(1);
+   }
 }
 
 // pretty self-evident.
-void samplingStop() {
+void samplingStop() { 
   samplingTimer.end();
 }
 
-
+////////////////////////
 // plays WN to the DAC output, at the appropriate sampling frequency. 
+//////////////////////
 void playbackCallBack() {
   analogWrite(AUDIO_OUTPUT_PIN, wn[PlayBackCounter]);
   PlayBackCounter++;
-  if (PlayBackCounter > 1024) {
+  if (PlayBackCounter > WN_SIZE) {
     samplingStop();
   }
 }
@@ -177,7 +180,9 @@ void playbackBegin() {
   samplingTimer.begin(playbackCallBack, 1000000 / SAMPLE_RATE_HZ);
 }
 
+////////////////////////
 // Get the last FFT_SIZE samples, and format them for the ARM FFT functions 
+////////////////////////
 void getsamples() {
 
   if (buffer.isFull()) {
@@ -197,8 +202,9 @@ void getsamples() {
   } // end Buffer.isfull
 }
 
+///////////////////////////
 // runs at SAMPLING_FREQUENCY_HZ, to get regular audio inputs. Adds to circular buffer (buffer), and centers around zero. 
-
+//////////////////////////////////
 void samplingCallback() {
 
   // Read from the ADC and store the sample data
