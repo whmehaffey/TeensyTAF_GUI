@@ -14,8 +14,7 @@ void loop() {
   
 
   //Serial.println(RUNNING_AMP);
-  if (RUNNING_AMP > AMP_THRESHOLD) {
-    export_mags();
+  if (RUNNING_AMP > AMP_THRESHOLD) {    
     AboveThresh++;
   }
   else {
