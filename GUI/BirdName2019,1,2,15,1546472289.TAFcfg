@@ -1,17 +1,17 @@
 [main]
-globalvars.maxff = 4500.0
-globalvars.minff = 3000.0
-globalvars.amp = 2800.0
+globalvars.maxff = 4500
+globalvars.minff = 3000
+globalvars.amp = 2800
 globalvars.dpthresh = 1.5
-globalvars.freqthresh = 0.0
-globalvars.savepath = C:/Users/Mimi-Kao/Dropbox/WN_TeensyTAF_Buffered_F32_GUI_v2/TeensyTAF_GUI/GUI/t.TAFlog
-globalvars.wn_on = True
+globalvars.freqthresh = 0
+globalvars.savepath = .//BirdName
+globalvars.wn_on = 1
 globalvars.hitdir = 0
-globalvars.updatethreshold = False
+globalvars.updatethreshold = True
 globalvars.fft = 256.0
 globalvars.samplingrate = 22100.0
-globalvars.dirflag = False
-updatethresholdpercent = 75
+globalvars.dirflag = 0
+updatethresholdpercent = <built-in method value of QSpinBox object at 0x038251C0>
 catchtrialpercent = 10
 
 [template]

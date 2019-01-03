@@ -35,11 +35,12 @@ def GetSerialData(savefile):
 def setAllButtons(ui,state):
         ui.startButton.setEnabled(state)
         ui.stopButton.setEnabled(state)
-        #ui.NFFTcomboBox.setEnabled(state)
-        #ui.SampleRateComboBox.setEnabled(state)
         ui.serialScan.setEnabled(state)
         ui.Teensy_Com_ComboBox.setEnabled(state)
         ui.uploadtemplateButton.setEnabled(state)
         ui.actionLoad_Config.setEnabled(state)
         ui.actionSave_Config.setEnabled(state)
         ui.FileAndPath_PushButton.setEnabled(state)
+        ui.ThresholdUpdateThresholdspinBox.setEnabled(state)
+        ui.CatchPercentspinBox.setEnabled(state)
+        

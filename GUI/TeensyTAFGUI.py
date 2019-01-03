@@ -57,24 +57,25 @@ def startButtonPressed():
             messageBox.show()
         
         GlobalVars.ser.set_buffer_size(rx_size = 50000, tx_size = 50000)
-        
+         
         date=time.localtime();
 
         RemoveAppendix=str(GlobalVars.SavePath);
         RemoveAppendix.strip('.TAFlog')
         BaseFileName=RemoveAppendix+str(date[0])+','+str(date[1])+','+str(date[2])+','+str(date[3])+','+str(int(time.time()))
-        
+     
         configfilename=BaseFileName+'.TAFcfg'
         GlobalVars.saveConfig(configfilename)        
-        GlobalVars.outfile=open(BaseFileName+'.TAFlog','w')     #Matched filenames for data and .Config files, for the sake of sanity.    
-        
+        GlobalVars.outfile=open(BaseFileName+'.TAFlog','w')     #Matched filenames for data and .Config files, for the sake of sanity.          
         setAllButtons(ui,False);
         ui.stopButton.setEnabled(True);
         GlobalVars.ser.flush()
-
-        GlobalVars.SendAllToTeensy()
         
-        GlobalVars.ser.write('START;')        
+        print 'START'
+        GlobalVars.SendAllToTeensy()
+        print 'START'        
+        GlobalVars.ser.write('START;')
+        print 'START'
         GlobalVars.isRunning=True
             
         while GlobalVars.isRunning==True:            
@@ -92,14 +93,16 @@ def startButtonPressed():
             if ((len(GlobalVars.FF)==QueSize) and isUpdated and GlobalVars.upDateThreshold): #Is Cue Full?
                 SortedFFs=sorted(GlobalVars.FF)
                 if (GlobalVars.HitDIR==1):  # Only move higher
-                    percentileidx=int(QueSize*0.75)
+                    PercentIDX=int(GlobalVars.UpDateThresholdPercent/100)
+                    percentileidx=int(QueSize* PercentIDX)
                     Threshold=SortedFFs[percentileidx]
                     GlobalVars.FreqTHRESH=Threshold;
                     GlobalVars.ser.write('SET FREQTHRESH ' + str(GlobalVars.FreqTHRESH) + ';')
                     ui.editFREQ_THRESH.setText((str(GlobalVars.FreqTHRESH)))
                     
                 if (GlobalVars.HitDIR==0):   # Only move lower.
-                    percentileidx=int(QueSize*0.25)
+                    PercentIDX=int(1-(GlobalVars.UpDateThresholdPercent/100))
+                    percentileidx=int(QueSize* PercentIDX)
                     Threshold=SortedFFs[percentileidx]
                     GlobalVars.FreqTHRESH=Threshold;
                     GlobalVars.ser.write('SET FREQTHRESH ' + str(GlobalVars.FreqTHRESH) + ';')
@@ -121,8 +124,7 @@ def startButtonPressed():
 ##                                
 ##                            ui.MagsfromTeensy.plot(MAGS,arange(0,GlobalVars.sampleBin*(GlobalVars.FFT/2),GlobalVars.sampleBin))
 ##                            templateOverPlot=templateOverPlot+ 1                            
-##                            TemplateCurrent=True;
-                            
+##                            TemplateCurrent=True;                       
        
                 
             isUpdated=False;
@@ -252,12 +254,17 @@ def upDateThresholdButtonPressed():
     import GlobalVars
 
     GlobalVars.upDateThreshold=ui.upDateThresholdCheckBox.isChecked()
-    print GlobalVars.upDateThreshold;
+    
+    if GlobalVars.upDateThreshold:
+            ui.ThresholdUpdateThresholdspinBox.setEnabled(True)
+    else:
+            ui.ThresholdUpdateThresholdspinBox.setEnabled(False)
+    
 
 def updateDirFlag():
     import GlobalVars
     GlobalVars.DirFlag=ui.DirFlagCheckBox.isChecked()
-    print int(GlobalVars.DirFlag)
+
     if (GlobalVars.isRunning):
         GlobalVars.ser.write('SET ISDIR ' + str(int(GlobalVars.WN_ON)) + ';')
 
@@ -274,6 +281,15 @@ def HitBelowButtonPressed():
     GlobalVars.HitDIR=0
     if GlobalVars.isRunning: 
         GlobalVars.ser.write('SET FREQDIR ' + str(int(GlobalVars.HitDIR)) + ';')
+
+def updateThreshholdPercent():
+    import GlobalVars
+    GlobalVars.UpDateThresholdPercent=ui.ThresholdUpdateThresholdspinBox.value;
+    
+
+def updateCatchPercent():
+    import GlobalVars
+    GlobalVars.CatchTrialPercent=ui.CatchPercentspinBox.value
             
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -298,6 +314,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         GlobalVars.WN_ON=1
         GlobalVars.upDateThreshold=False
         GlobalVars.DirFlag=0
+        GlobalVars.UpDateThresholdPercent=75
+        GlobalVars.CatchTrialPercent=10
         
         
         GlobalVars.sampleBin=(GlobalVars.SamplingRate/2)/GlobalVars.FFT        
@@ -328,7 +346,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.uploadtemplateButton.clicked.connect(updateTemplate)
         self.DirFlagCheckBox.clicked.connect(updateDirFlag)
         self.upDateThresholdCheckBox.clicked.connect(upDateThresholdButtonPressed)
-
+        self.ThresholdUpdateThresholdspinBox.valueChanged.connect(updateThreshholdPercent)
+        self.CatchPercentspinBox.valueChanged.connect(updateCatchPercent)
+        self.ThresholdUpdateThresholdspinBox.setEnabled(False)
  
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

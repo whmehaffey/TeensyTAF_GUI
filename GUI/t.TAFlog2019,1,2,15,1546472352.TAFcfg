@@ -7,11 +7,11 @@ globalvars.freqthresh = 0.0
 globalvars.savepath = C:/Users/Mimi-Kao/Dropbox/WN_TeensyTAF_Buffered_F32_GUI_v2/TeensyTAF_GUI/GUI/t.TAFlog
 globalvars.wn_on = True
 globalvars.hitdir = 0
-globalvars.updatethreshold = False
+globalvars.updatethreshold = True
 globalvars.fft = 256.0
 globalvars.samplingrate = 22100.0
 globalvars.dirflag = False
-updatethresholdpercent = 75
+updatethresholdpercent = <built-in method value of QSpinBox object at 0x038DC210>
 catchtrialpercent = 10
 
 [template]

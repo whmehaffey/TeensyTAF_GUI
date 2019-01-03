@@ -6,7 +6,7 @@
 // Distributed as-is. No warranty asked or received. 
 //
 // 
-
+ 
 // ARM library.....
 #define ARM_MATH_CM4
 #include <arm_math.h>
@@ -75,7 +75,7 @@ float FF_DISCARD = 300; // Ignore parts of the FF below this (200-300Hz usually 
 float FF_MIN = 2900; //  Lower Limit for frequency bins to find peak.
 float FF_MAX = 4200; //. Upper Limit to look at frequencies to find peak.
 int FREQTHRESH = 3800 ;  /////////// Frequency Limits
-int PercentHits = 100; /////////  Maintain this percent hits.
+int PERCENTHITS = 100; /////////  Maintain this percent hits.
 boolean isRunning = false;
 boolean ISDIR = false;
 

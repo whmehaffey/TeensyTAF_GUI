@@ -35,7 +35,7 @@ void play_wn() {
   
   ThreshRand = random(1, 100); // choose a random variable
 
-  if (ThreshRand < PercentHits) { //Decide if the next trial will be a hit, or a catch.
+  if (ThreshRand < PERCENTHITS) { //Decide if the next trial will be a hit, or a catch.
     HIT = 1;
   }
   else {

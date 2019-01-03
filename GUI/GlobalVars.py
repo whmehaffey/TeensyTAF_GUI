@@ -15,6 +15,8 @@ global SamplingRate
 global WN_ON
 global upDateThreshold
 global DirFlag
+global UpDateThresholdPercent
+global CatchTrialPercent
 
 def loadConfig(loadfilename):
     from ConfigParser import SafeConfigParser
@@ -40,6 +42,8 @@ def loadConfig(loadfilename):
     GlobalVars.HitDIR=int(parser.get('main','GlobalVars.HitDIR'))
     GlobalVars.DirFlag=bool(parser.getboolean('main','GlobalVars.DirFlag'))    
     GlobalVars.upDateThreshold=bool(parser.getboolean('main','GlobalVars.upDateThreshold'))
+    GlobalVars.UpDateThresholdPercent=int(parser.get('main','UpDateThresholdPercent'))    
+    GlobalVars.CatchTrialPercent=int(parser.get('main','CatchTrialPercent'))    
     
     newTemplate=parser.get('template','GlobalVars.template')    
     newTemplate=parser.get('template','GlobalVars.template');
@@ -74,9 +78,9 @@ def saveConfig(savefilename):
     parser.set('main','GlobalVars.FFT',str(GlobalVars.FFT))
     parser.set('main','GlobalVars.SamplingRate',str(GlobalVars.SamplingRate))
     parser.set('main','GlobalVars.DirFlag',str(GlobalVars.DirFlag))
-
-    
-    parser.write(SaveFile)
+    parser.set('main','UpDateThresholdPercent',str(GlobalVars.UpDateThresholdPercent))    
+    parser.set('main','CatchTrialPercent',str(GlobalVars.CatchTrialPercent))
+    parser.write(SaveFile)    
     SaveFile.close()
 
 def UpDateValues(ui):
@@ -93,6 +97,8 @@ def UpDateValues(ui):
     ui.upDateThresholdCheckBox.setChecked(bool(GlobalVars.upDateThreshold))
     ui.DirFlagCheckBox.setChecked(bool(GlobalVars.DirFlag))
     ui.templateView.plot(GlobalVars.template,arange(0,GlobalVars.sampleBin*(GlobalVars.FFT/2),GlobalVars.sampleBin))
+    ui.CatchPercentspinBox.setValue(GlobalVars.CatchTrialPercent)
+    ui.ThresholdUpdateThresholdspinBox.setValue(GlobalVars.UpDateThresholdPercent)
 
     if (GlobalVars.HitDIR==1):
         ui.HitBelowButton.setChecked(True)
@@ -111,6 +117,8 @@ def SendAllToTeensy():
     GlobalVars.ser.write('SET FREQDIR ' + str(int(GlobalVars.HitDIR)) + ';')
     GlobalVars.ser.write('SET PLAYWN ' + str(int(GlobalVars.WN_ON)) + ';')
     GlobalVars.ser.write('SET ISDIR ' + str(int(GlobalVars.DirFlag)) + ';')
+    GlobalVars.ser.write('SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';')   
+    
     print 'SET AMP_THRESHOLD ' + str(GlobalVars.FreqTHRESH) + ';'
     print 'SET FF_MIN ' + str(GlobalVars.MinFF) + ';'
     print 'SET FF_MAX ' + str(GlobalVars.MaxFF) + ';'
@@ -120,6 +128,9 @@ def SendAllToTeensy():
     print 'SET FREQDIR ' + str((GlobalVars.HitDIR)) + ';'
     print 'SET PLAYWN ' + str((GlobalVars.WN_ON)) + ';'
     print 'SET ISDIR ' + str(int(GlobalVars.DirFlag)) + ';'
+    print ('SET PERCENTHITS ' + str(GlobalVars.CatchTrialPercent) + ';')
+  
+    
 
     
 
