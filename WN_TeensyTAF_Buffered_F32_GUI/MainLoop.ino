@@ -54,6 +54,7 @@ void loop() {
 
       } // end of sanity check for peak FF.
     } //end of template match triggered portions
+    AboveThresh = 0;
   } // end of amplitude triggered portion
 
 } // end Main Loop
