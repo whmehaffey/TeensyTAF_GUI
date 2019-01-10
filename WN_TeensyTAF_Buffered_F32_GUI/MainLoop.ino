@@ -5,8 +5,8 @@ void loop() {
 
   //float timea = micros();
   if (isRunning) {     
-     //getsamples(); // not perfect, but I can't point to a volatile float, and I don't want to make the samples non-volatile.
-     //arm_rms_f32(fftbuffer, FFT_SIZE, &RUNNING_AMP); //RMS of the buffer. Since there's a 'complex' component of all zeros, it still works fine.   
+     getsamples(); // not perfect, but I can't point to a volatile float, and I don't want to make the samples non-volatile.
+     arm_rms_f32(fftbuffer, FFT_SIZE, &RUNNING_AMP); //RMS of the buffer. Since there's a 'complex' component of all zeros, it still works fine.   
   }
   else {
     RUNNING_AMP=0;  
